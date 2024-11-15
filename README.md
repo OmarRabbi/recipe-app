@@ -32,3 +32,4 @@
 - Make your necessary changes and upload your new project into your personal GitHub account as a public repository
 - Host your final version on Vercel, Netlify, Firebase or similar platform and prepare your live link.
 - You must submit your "GitHub Link" & "Live Link"
+# recipe-app
