@@ -12,17 +12,7 @@ export const RecipeProvider = ({ children }) => {
   const [cart, setCart] = useState([]); 
   const { isAuthenticated, userId } = useAuth();
 
-  // Function to get the correct cart key based on user authentication
-  const getCartKey = () => {
-    if (isAuthenticated && userId) {
-      return `${userId}_cart`;  // Consistent cart key for authenticated users
-    } else {
-      const guestKey = localStorage.getItem("guest_session_id");
-      return guestKey ? `${guestKey}_cart` : `guest_${uuidv4()}_cart`;  // Consistent key for guest users
-    }
-  };
-
-  // Fetch all recipes
+  // Fetch all recipes data
   const { data: recipes, error, isLoading } = useQuery({
     queryKey: ["allRecipes"],
     queryFn: HttpKit.getAllRecipes,
@@ -36,18 +26,32 @@ export const RecipeProvider = ({ children }) => {
     });
   };
 
-  // Load cart data from localStorage
   useEffect(() => {
     const loadCartData = () => {
-      const cartKey = getCartKey();
-      const savedCart = localStorage.getItem(cartKey);
-      if (savedCart) {
-        setCart(JSON.parse(savedCart));
+      if (isAuthenticated && userId) {
+        const cartKey = `${userId}_${uuidv4()}_cart`;
+        const savedCart = localStorage.getItem(cartKey);
+        if (savedCart) {
+          setCart(JSON.parse(savedCart)); 
+        } else {
+          setCart([]); 
+        }
       } else {
-        setCart([]);
+        const guestKey = localStorage.getItem("guest_session_id");
+        const cartKey = guestKey ? `${guestKey}_cart` : `guest_${uuidv4()}_cart`;
+        const savedCart = localStorage.getItem(cartKey);
+        if (savedCart) {
+          setCart(JSON.parse(savedCart)); 
+        } else {
+          setCart([]);
+        }
+
+        if (!guestKey) {
+          const newGuestKey = uuidv4(); 
+          localStorage.setItem("guest_session_id", newGuestKey);
+        }
       }
     };
-
     loadCartData();
   }, [isAuthenticated, userId]);
 
@@ -55,8 +59,15 @@ export const RecipeProvider = ({ children }) => {
   const addToCart = (recipe) => {
     setCart((prevCart) => {
       const updatedCart = [...prevCart, recipe];
-      const cartKey = getCartKey();
-      localStorage.setItem(cartKey, JSON.stringify(updatedCart)); // Store updated cart
+      if (isAuthenticated && userId) {
+        const cartKey = `${userId}_${uuidv4()}_cart`;
+        localStorage.setItem(cartKey, JSON.stringify(updatedCart));
+      } else {
+        const guestKey = localStorage.getItem("guest_session_id");
+        const cartKey = guestKey ? `${guestKey}_cart` : `guest_${uuidv4()}_cart`; // Ensure unique cart for each guest
+        localStorage.setItem(cartKey, JSON.stringify(updatedCart));
+      }
+
       return updatedCart;
     });
   };
@@ -65,32 +76,36 @@ export const RecipeProvider = ({ children }) => {
   const removeFromCart = (idMeal) => {
     setCart((prevCart) => {
       const updatedCart = prevCart.filter((item) => item.idMeal !== idMeal);
-
-      if (updatedCart.length === 0) {
-        console.log("Cart is now empty, updating localStorage...");
+      
+      if (isAuthenticated && userId) {
+        const cartKey = `${userId}_${uuidv4()}_cart`;
+        localStorage.setItem(cartKey, JSON.stringify(updatedCart));
+      } else {
+        const guestKey = localStorage.getItem("guest_session_id");
+        const cartKey = guestKey ? `${guestKey}_cart` : `guest_${uuidv4()}_cart`;
+        localStorage.setItem(cartKey, JSON.stringify(updatedCart));
       }
-
-      const cartKey = getCartKey();
-      localStorage.setItem(cartKey, JSON.stringify(updatedCart)); // Store updated cart
-
       return updatedCart;
     });
   };
 
-  // Clear the entire cart
   const clearCart = () => {
     setCart([]);
-    const cartKey = getCartKey();
-    localStorage.removeItem(cartKey); // Remove cart from localStorage
+
+    if (isAuthenticated && userId) {
+      const cartKey = `${userId}_${uuidv4()}_cart`;
+      localStorage.removeItem(cartKey);
+    } else {
+      const guestKey = localStorage.getItem("guest_session_id");
+      const cartKey = guestKey ? `${guestKey}_cart` : `guest_${uuidv4()}_cart`;
+      localStorage.removeItem(cartKey);
+    }
   };
 
   // Reset the cart state on logout
   useEffect(() => {
     if (!isAuthenticated) {
-      console.log("User logged out, clearing cart...");
       setCart([]);
-      const cartKey = getCartKey();
-      localStorage.removeItem(cartKey); // Clear cart from localStorage
     }
   }, [isAuthenticated]);
 
