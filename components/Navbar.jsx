@@ -1,9 +1,13 @@
+"use client"; 
+import { useAuth } from "@/providers/authContext";
+import { useRecipes } from "@/providers/recipeContext";
 import Link from "next/link";
-import React from "react";
 
 const Navbar = () => {
+  const { isAuthenticated, logout } = useAuth();
+  const { cart } = useRecipes();
   return (
-    <nav className="fixed z-50 w-full bg-white  md:absolute md:bg-transparent">
+    <nav className="fixed z-10 w-full bg-white md:bg-transparen">
       <div className="container m-auto px-2 md:px-12 lg:px-7">
         <div className="flex flex-wrap items-center justify-between py-3 gap-6 md:py-4 md:gap-0">
           <input
@@ -42,7 +46,6 @@ const Navbar = () => {
               </label>
             </div>
           </div>
-
           <label
             role="button"
             htmlFor="toggle_nav"
@@ -60,35 +63,54 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link
+                <Link
                     href="/cart"
-                    className="block md:px-4 transition hover:text-yellow-700"
+                    className="block md:px-4 transition hover:text-yellow-700 relative"
                   >
                     <span>Cart</span>
+                    {cart.length > 0 && (
+                      <span className="absolute top-[-10px] right-[1] text-xs bg-yellow-300 text-yellow-900 rounded-full px-2 py-1">
+                        {cart.length}
+                      </span>
+                    )}
                   </Link>
                 </li>
               </ul>
             </div>
-
             <div className="w-full min-w-max space-y-2 border-yellow-200 lg:space-y-0 sm:w-max lg:border-l ">
-              <button
-                type="button"
-                title="Start buying"
-                className="w-full py-3 px-6 text-center rounded-full transition active:bg-yellow-200   focus:bg-yellow-100 sm:w-max"
-              >
-                <span className="block text-yellow-800 font-semibold text-sm">
-                  Sign up
-                </span>
-              </button>
-              <button
-                type="button"
-                title="Start buying"
-                className="w-full py-3 px-6 text-center rounded-full transition bg-yellow-300 hover:bg-yellow-100 active:bg-yellow-400 focus:bg-yellow-300 sm:w-max"
-              >
-                <span className="block text-yellow-900 font-semibold text-sm">
-                  Login
-                </span>
-              </button>
+              {!isAuthenticated ? (
+                <>
+                  <button
+                    type="button"
+                    title="Start buying"
+                    className="w-full py-3 px-6 text-center rounded-full transition active:bg-yellow-200   focus:bg-yellow-100 sm:w-max"
+                  >
+                    <Link className="block text-yellow-800 font-semibold text-sm" href='/auth/signup'>
+                    <span>
+                      Sign up
+                    </span>
+                    </Link>
+                  </button>
+                  <button
+                    type="button"
+                    title="Start buying"
+                    className="w-full py-3 px-6 text-center rounded-full transition bg-yellow-300 hover:bg-yellow-100 active:bg-yellow-400 focus:bg-yellow-300 sm:w-max"
+                  >
+                    <Link className="block text-yellow-900 font-semibold text-sm" href='/auth/login'>
+                    <span>
+                      Login
+                    </span>
+                    </Link>
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={logout}
+                  className="w-full py-3 px-6 text-center rounded-full transition bg-red-500 hover:bg-red-400 active:bg-red-600 focus:bg-red-500 sm:w-max"
+                >
+                  <span className="text-white font-semibold">Logout</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

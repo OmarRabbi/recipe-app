@@ -3,6 +3,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 // import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import TanstackProvider from "@/providers/TanstackProvider";
+import { AuthProvider } from "@/providers/authContext";
+import { RecipeProvider } from "@/providers/recipeContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,10 +29,14 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TanstackProvider>
-          <Navbar />
-          {children}
-        </TanstackProvider>
+        <AuthProvider>
+          <TanstackProvider>
+            <RecipeProvider>
+              <Navbar />
+              {children}
+            </RecipeProvider>
+          </TanstackProvider>
+        </AuthProvider>
       </body>
     </html>
   );

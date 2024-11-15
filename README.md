@@ -2,34 +2,44 @@
 
 # Description:
 
-- You are provided with an incomplete Recipe App project that uses the free MealDB API to retrieve recipe data. The app needs to showcase some recipes and allows users to add them to a cart. Functionalities after carting is not required for the current MVP. The home page includes a banner section, a top recipes section, and a search option to find recipes by name or ingredients.
+- Tailus Feedus is a modern, user-friendly recipe app designed to provide a seamless experience for browsing, saving, and managing recipes. It offers an intuitive interface for users to explore a wide range of recipes, add them to their cart, and manage their personal collections. Users can register and log in to save their cart and recipes across sessions. The app also allows guest users to browse and manage their cart locally.
 
-# Required New Features:
+## Features Implemented
 
-- Basic Authentication: Implement an authentication flow using name, email, phone, and a password.
-- All Recipes Page: Create a page where users can view all recipes.
-- Add Recipe to Cart: Allow users to add recipes to a cart. The cart should store data locally if the user is not logged in, and save it to the user’s account if they are logged in.
-- Bug Fixes: There are at least three, or more features that are currently not working properly. Identify and fix these bugs.
+### 1. **Authentication and User Management (Login/Logout)**
+   - **Technical**: Implemented authentication using `AuthContext` to manage user login state, storing session data in `localStorage`. Users can log in, log out, and their authentication state persists across page reloads.
+   - **Non-Technical**: Users can sign up, log in, and log out. The app remembers their login status even after a page refresh.
 
-# Additional Requirements:
+### 2. **Cart Management (Add/Remove Items, Persistence)**
+   - **Technical**: Integrated a cart system using `RecipeContext`. Cart items are stored in `localStorage` for both authenticated and guest users. Cart data persists across sessions, even after page reloads.
+   - **Non-Technical**: Users can add and remove recipes from their cart. The cart is saved and remembered even if users refresh the page or return to the site later.
 
-- Consistent Design Style: Ensure that any new features match the design style of the existing application. Follow basic accessibility standards.
-- Mobile Responsiveness: Make all pages responsive for mobile devices.
+### 3. **Recipe Listing
+   - **Technical**: Recipes are fetched using react-query from an API and displayed in a list format.
+   - **Non-Technical**: Users can browse a list of recipes and add their favorites to the cart.
 
-# Documentation Requirements:
+### 4. **User Cart for Authenticated and Guest Users**
+   - **Technical**: Used `localStorage` to store cart data for both authenticated and guest users. Cart items are merged if a guest user logs in, ensuring no data loss between sessions.
+   - **Non-Technical**: Both logged-in users and guests can keep their cart items even if they leave and come back later, and logged-in users won't lose cart items when signing in.
 
-- After completion, document under the README section.
-- Features Implemented: Describe the new features you added, in both technical and non-technical terms.
-- Bug Fixes: Briefly list the bugs you identified and fixed.
-- Time Estimate: Indicate the total time spent on the assessment.
+### 5. **Dynamic Cart Item Count in Navbar**
+   - **Technical**: The cart item count in the navigation bar dynamically updates based on the current cart state.
+   - **Non-Technical**: The cart count in the navigation bar reflects the number of items in the cart, and it updates in real-time as items are added or removed.
 
-# N.B. Documentation should be brief and short, no need to go overboard with it.
+---
 
-# Submission Guidelines:
+## Bug Fixes
 
-- Clone or ZIP Download the existing GitHub Code repository: https://github.com/khalek-repliq/frontend-assessment
-- Get rid of the .git folder from the project.
-- Make your necessary changes and upload your new project into your personal GitHub account as a public repository
-- Host your final version on Vercel, Netlify, Firebase or similar platform and prepare your live link.
-- You must submit your "GitHub Link" & "Live Link"
-# recipe-app
+### 1. **Fixed Authentication**
+   - Authentication state wasn't properly preserved across page reloads.
+
+### 2. **Fixed Missing Data After Login**
+   - Ensured that when a user logs in, their previously added cart items (as a guest) are not lost, and the cart is properly merged with the logged-in user's data.
+
+### 3. **Corrected Cart Persistence on Page Reload**
+   - Fixed issues with cart data not persisting after a page reload, ensuring that cart items remain intact for both guest and authenticated users.
+
+---
+
+## Time Estimate
+- **Total Time Spent**: 18-20 hours
